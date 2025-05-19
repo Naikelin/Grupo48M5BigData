@@ -1,3 +1,6 @@
+##
+## Importación de librerías
+##
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -5,13 +8,18 @@ import seaborn as sns
 import plotly.express as px
 from datetime import datetime
 
+##
+## Configuración de la página
+##
 st.set_page_config(
     page_title="Análisis Visual de Ventas de Tienda de Conveniencia",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Cargar datos
+##
+## Carga de datos
+##
 @st.cache_data
 def load_data():
     df = pd.read_csv('data.csv')
@@ -21,14 +29,18 @@ def load_data():
 
 df = load_data()
 
-# Sidebar para filtros globales
+##
+## Sidebar para filtros globales
+##
 st.sidebar.header("Filtros")
 branches = st.sidebar.multiselect("Sucursal (Branch)", options=sorted(df["Branch"].unique()), default=list(df["Branch"].unique()))
 product_lines = st.sidebar.multiselect("Línea de Producto", options=sorted(df["Product line"].unique()), default=list(df["Product line"].unique()))
 date_min, date_max = df["Date"].min(), df["Date"].max()
 date_range = st.sidebar.date_input("Rango de Fechas", [date_min, date_max], min_value=date_min, max_value=date_max)
 
-# Aplicar filtros
+##
+## Aplicación de filtros
+##
 df_filt = df[
     (df["Branch"].isin(branches)) &
     (df["Product line"].isin(product_lines)) &
@@ -36,6 +48,9 @@ df_filt = df[
     (df["Date"] <= pd.to_datetime(date_range[1]))
 ]
 
+##
+## Título y texto de la página
+##
 st.title("Análisis Visual de Ventas de Tienda de Conveniencia")
 st.text("Selecciona una tabla para ver los diferentes análisis disponibles:")
 
@@ -43,7 +58,9 @@ tab_names = [ f"Análisis {i+1}" for i in range(8) ]
 
 tabs = st.tabs(tab_names)
 
-# 1. Evolución de las Ventas Totales
+##
+## Análisis 1: Evolución de las Ventas Totales - Gráfico de Líneas
+##
 def plot_sales_evolution(df):
     sales_by_date = df.groupby("Date")["Total"].sum().reset_index()
     fig = px.line(sales_by_date, x="Date", y="Total", title="Evolución de las Ventas Totales")
@@ -52,11 +69,25 @@ def plot_sales_evolution(df):
 
 with tabs[0]:
     st.subheader("1. Evolución de las Ventas Totales")
-    st.markdown("Muestra cómo han variado las ventas totales a lo largo del tiempo.")
+    st.markdown("""
+    Este gráfico permite observar cómo han variado las ventas totales a lo largo del tiempo en las fechas seleccionadas.
+
+    #### ¿Qué muestra?
+    - La evolución y variación de las ventas totales para el periodo registrado en los datos.
+    - El eje x muestra las fechas seleccionadas.
+    - El eje y muestra el monto total de las ventas.
+    
+    #### ¿Qué observamos?
+    - Para las 3 sucursales, el día con mayor registro de ventas corresponde al día 9 de marzo del 2019.
+    - Para las 3 sucursales, el día con menor registro de ventas corresponde al día 1 de marzo del 2019.
+    ---
+    """)
     plot_sales_evolution(df_filt)
     st.markdown("---")
 
-# 2. Ingresos por Línea de Producto
+##
+## Análisis 2: Ingresos por Línea de Producto - Gráfico de Barras
+##
 def plot_income_by_product_line(df):
     income_by_line = df.groupby("Product line")["Total"].sum().sort_values().reset_index()
     fig = px.bar(income_by_line, x="Total", y="Product line", orientation="h", title="Ingresos por Línea de Producto")
@@ -65,12 +96,36 @@ def plot_income_by_product_line(df):
 
 with tabs[1]:
     st.subheader("2. Ingresos por Línea de Producto")
-    st.markdown("Compara el ingreso total generado por cada línea de productos.")
+    st.markdown("""
+    Este gráfico permite observar el ingreso total generado por cada línea de productos vendido en las sucursales.
+
+    #### ¿Qué muestra?
+    - Un gráfico de barras horizontal que muestra el ingreso total por cada línea de productos.
+    - El eje x muestra el ingreso total.
+    - El eje y muestra la línea de productos reportada.
+    
+    #### ¿Qué observamos?
+    ##### Sucursales A, B y C
+    - La línea de productos "Food and beverages" es la que genera el mayor ingreso total para todas las sucursales.
+    - La línea de productos "Health and beauty" es la que genera el menor ingreso total para todas las sucursales.
+    ##### Sucursal A
+    - Para el caso de la sucursal "A", se observa que la línea de productos "Home and lifestyle" es la que genera el mayor ingreso total.
+    - Por otro lado, la línea de productos "Health and beauty" es la que genera el menor ingreso total para la sucursal "A".
+    ##### Sucursal B
+    - Para el caso de la sucursal "B", se observa que la línea de productos "Sports and Travel" es la que genera el mayor ingreso total seguido muy de cerca por
+    la línea de productos "Health and Beauty"
+    - Mientras que la línea de productos "Food and beverages" es la que genera el menor ingreso total para la sucursal "B".
+    ##### Sucursal C
+    - Para el caso de la sucursal "C", se observa que la línea de productos "Food and beverages" es la que genera el mayor ingreso total.
+    - Por otro lado, la línea de productos "Home and lifestyle" es la que genera el menor ingreso total para la sucursal "C".
+    ---
+    """)
     plot_income_by_product_line(df_filt)
     st.markdown("---")
 
-
-# 3. Distribución de la Calificación de Clientes (mejorado)
+##
+## Análisis 3: Distribución de la Calificación de Clientes (mejorado) - Gráfico de Histograma
+##
 def plot_rating_distribution(df):
     fig = px.histogram(
         df,
@@ -104,7 +159,9 @@ with tabs[2]:
     plot_rating_distribution(df_filt)
     st.markdown("---")
 
-# 4. Comparación del Gasto por Tipo de Cliente (mejorado)
+##
+## Análisis 4: Comparación del Gasto por Tipo de Cliente (mejorado) - Gráfico de Boxplot
+##
 def plot_spending_by_customer_type(df):
     fig = px.box(
         df,
@@ -140,7 +197,9 @@ with tabs[3]:
     plot_spending_by_customer_type(df_filt)
     st.markdown("---")
 
-# 5. Relación entre Bienes Vendidos e Ingreso Bruto
+##
+## Análisis 5: Relación entre Bienes Vendidos e Ingreso Bruto - Gráfico de Mapa de Densidad
+##
 def plot_quantity_vs_gross_income(df):
     fig = px.density_heatmap(
         df,
@@ -191,7 +250,9 @@ with tabs[4]:
     plot_quantity_vs_gross_income(df_filt)
     st.markdown("---")
 
-# 6. Métodos de Pago Preferidos
+##
+## Análisis 6: Métodos de Pago Preferidos - Gráfico de Pastel
+##
 def plot_payment_methods(df):
     payment_counts = df["Payment"].value_counts().reset_index()
     payment_counts.columns = ["Método de Pago", "Cantidad"]
@@ -230,7 +291,9 @@ with tabs[5]:
     plot_payment_methods(df_filt)
     st.markdown("---")
 
-# 7. Mapa de Calor de Correlaciones
+##
+## Análisis 7: Mapa de Calor de Correlaciones - Gráfico de Calor
+##
 def plot_correlation_heatmap(df):
     num_cols = ["Unit price", "Quantity", "Tax 5%", "Total", "cogs", "gross margin percentage", "gross income", "Rating"]
     corr = df[num_cols].corr()
@@ -243,7 +306,9 @@ with tabs[6]:
     plot_correlation_heatmap(df_filt)
     st.markdown("---")
 
-# 8. Composición del Ingreso Bruto por Sucursal y Línea de Producto
+##
+## Análisis 8: Composición del Ingreso Bruto por Sucursal y Línea de Producto
+##
 def plot_gross_income_by_branch_and_line(df):
     grouped = df.groupby(["Branch", "Product line"])['gross income'].sum().reset_index()
     fig = px.bar(grouped, x="Branch", y="gross income", color="Product line", barmode="stack", title="Ingreso Bruto por Sucursal y Línea de Producto")
@@ -257,4 +322,4 @@ with tabs[7]:
     st.markdown("---")
 
 st.sidebar.markdown("---")
-st.sidebar.info("Dashboard desarrollado para el análisis visual de ventas de una tienda de conveniencia. Selecciona filtros para explorar los datos de interés.")
+st.sidebar.info("Dashboard desarrollado por el Grupo 48 para el Módulo 5 del diplomado Big Data and Machine Learning UAutónoma, Mayo 2025.")
