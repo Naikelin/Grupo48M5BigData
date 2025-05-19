@@ -69,27 +69,74 @@ with tabs[1]:
     plot_income_by_product_line(df_filt)
     st.markdown("---")
 
-# 3. Distribución de la Calificación de Clientes
+
+# 3. Distribución de la Calificación de Clientes (mejorado)
 def plot_rating_distribution(df):
-    fig = px.histogram(df, x="Rating", nbins=20, title="Distribución de la Calificación de Clientes")
-    fig.update_layout(xaxis_title="Calificación", yaxis_title="Frecuencia")
+    fig = px.histogram(
+        df,
+        x="Rating",
+        nbins=20,
+        title="Distribución de la Calificación de Clientes",
+        color_discrete_sequence=["#4e79a7"]
+    )
+    fig.update_layout(
+        xaxis_title="Calificación (Rating)",
+        yaxis_title="Frecuencia de Clientes",
+        template="plotly_white",
+        bargap=0.05
+    )
     st.plotly_chart(fig, use_container_width=True)
 
 with tabs[2]:
     st.subheader("3. Distribución de la Calificación de Clientes")
-    st.markdown("Analiza la distribución de las calificaciones de los clientes.")
+    st.markdown("""
+    Este gráfico permite observar cómo se distribuyen las calificaciones entregadas por los clientes.
+
+    #### ¿Qué muestra?
+    - Un histograma con 20 divisiones (bins) para mayor detalle.
+    - Permite ver si hay una tendencia general hacia calificaciones positivas o negativas.
+
+    #### ¿Qué observamos?
+    - La mayoría de las calificaciones se concentran entre 6 y 9, indicando satisfacción general positiva.
+    - Pocas calificaciones extremas (muy bajas o muy altas).
+    - Útil para evaluar la percepción global de la experiencia del cliente.
+    """)
     plot_rating_distribution(df_filt)
     st.markdown("---")
 
-# 4. Comparación del Gasto por Tipo de Cliente
+# 4. Comparación del Gasto por Tipo de Cliente (mejorado)
 def plot_spending_by_customer_type(df):
-    fig = px.box(df, x="Customer type", y="Total", color="Customer type", points="all", title="Comparación del Gasto por Tipo de Cliente")
-    fig.update_layout(xaxis_title="Tipo de Cliente", yaxis_title="Gasto Total")
+    fig = px.box(
+        df,
+        x="Customer type",
+        y="Total",
+        color="Customer type",
+        points="all",
+        title="Comparación del Gasto por Tipo de Cliente",
+        color_discrete_map={"Member": "#59a14f", "Normal": "#edc948"}
+    )
+    fig.update_traces(jitter=0.3, marker_opacity=0.5)
+    fig.update_layout(
+        xaxis_title="Tipo de Cliente",
+        yaxis_title="Monto Total de Compra",
+        template="plotly_white"
+    )
     st.plotly_chart(fig, use_container_width=True)
 
 with tabs[3]:
     st.subheader("4. Comparación del Gasto por Tipo de Cliente")
-    st.markdown("Compara la distribución del gasto total entre clientes Member y Normal.")
+    st.markdown("""
+    Este gráfico boxplot compara cómo varía el monto de compra entre clientes miembros (Member) y normales (Normal).
+
+    #### ¿Qué muestra?
+    - Distribución estadística completa del gasto total por cliente según su tipo.
+    - Se incluyen todos los puntos individuales para observar la dispersión.
+
+    #### ¿Qué observamos?
+    - Los clientes "Member" tienden a tener un gasto levemente más alto en promedio.
+    - Hay valores atípicos en ambos grupos, pero mayor dispersión en clientes normales.
+    - Esto sugiere que los miembros podrían estar más comprometidos o compran productos de mayor valor.
+    """)
     plot_spending_by_customer_type(df_filt)
     st.markdown("---")
 
