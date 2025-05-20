@@ -297,7 +297,7 @@ with tabs[5]:
 def plot_correlation_heatmap(df):
     num_cols = ["Unit price", "Quantity", "Tax 5%", "Total", "cogs", "gross income", "Rating"]
     corr = df[num_cols].corr()
-    fig = px.imshow(corr, text_auto=True, color_continuous_scale="BuRd", title="Mapa de Calor de Correlaciones",width=1000,height=600)
+    fig = px.imshow(corr, text_auto=True, color_continuous_scale="RdBu_r", title="Mapa de Calor de Correlaciones",width=1000,height=800)
     st.plotly_chart(fig, use_container_width=True)
 
 with tabs[6]:
