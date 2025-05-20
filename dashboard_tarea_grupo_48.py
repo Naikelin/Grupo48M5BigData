@@ -243,7 +243,7 @@ with tabs[4]:
     #### ¿Qué se puede observar?
     - Los puntos de mayor densidad están alineados en diagonal ascendente, indica una relación directa: a mayor costo, mayor ganancia bruta.
     - Esto quiere decir que los productos con un costo más alto tienden a generar un ingreso bruto mayor, sin embargo, existe una mayor concentración de ventas en productos con un costo bajo.
-    - En general (considerando todos los datos sin filtrar): se le puede ***recocmendar a la tienda que ofrezca productos de costo variado***, ya que los productos de costo bajo son los más vendidos, pero los de costo alto generan un ingreso bruto mayor.
+    - En general (considerando todos los datos sin filtrar): se le puede ***recomendar a la tienda que ofrezca productos de costo variado***, ya que los productos de costo bajo son los más vendidos, pero los de costo alto generan un ingreso bruto mayor.
     ---
     """
     st.markdown(md)
@@ -295,14 +295,25 @@ with tabs[5]:
 ## Análisis 7: Mapa de Calor de Correlaciones - Gráfico de Calor
 ##
 def plot_correlation_heatmap(df):
-    num_cols = ["Unit price", "Quantity", "Tax 5%", "Total", "cogs", "gross margin percentage", "gross income", "Rating"]
+    num_cols = ["Unit price", "Quantity", "Tax 5%", "Total", "cogs", "gross income", "Rating"]
     corr = df[num_cols].corr()
-    fig = px.imshow(corr, text_auto=True, color_continuous_scale="RdBu", title="Mapa de Calor de Correlaciones")
+    fig = px.imshow(corr, text_auto=True, color_continuous_scale="BuRd", title="Mapa de Calor de Correlaciones",width=1000,height=600)
     st.plotly_chart(fig, use_container_width=True)
 
 with tabs[6]:
     st.subheader("7. Mapa de Calor de Correlaciones")
-    st.markdown("Visualiza la matriz de correlación entre variables numéricas.")
+    st.markdown("""
+    Este gráfico heatmap nos permite obtener una representacion visual de las correlaciones entre las variables.
+
+    #### ¿Qué muestra?
+    - El índice de correlacion entre las variables cuantitativas de las ventas
+    - Los valores mientras más cercanos a 1 mayor correlación y se representa con colores mas cálidos, valores mas alejados de 1 colores mas fríos
+    - Tanto el eje y como el x representan a las variables analizadas
+    
+    #### ¿Qué observamos?
+    - La calificacion de los clientes no esta correlacionada con ninguna variable del set de datos por lo que la satisfación es independiente del monto gastado.
+    - Las variables ventas, costo, ingresos brutos e impuestos estan perfectamente correlacionadas, por lo que cualquier variacion en alguna de aquellas variables se reflejara en las demás con la misma proporción.
+    """)
     plot_correlation_heatmap(df_filt)
     st.markdown("---")
 
@@ -317,7 +328,20 @@ def plot_gross_income_by_branch_and_line(df):
 
 with tabs[7]:
     st.subheader("8. Composición del Ingreso Bruto por Sucursal y Línea de Producto")
-    st.markdown("Muestra la contribución de cada línea de producto al ingreso bruto dentro de cada sucursal.")
+    st.markdown("""
+    Este gráfico de barras apilado nos permite ver como se componen las ventas de las tiendas por las líneas de producto.
+
+    #### ¿Qué muestra?
+    - Muestra las sucursales A, B y C y como se dividen los Ingresos Brutos segun la linea de producto
+    - El eje x muestra las sucursales
+    - El eje y muestra el monto de los Ingresos
+    
+    #### ¿Qué observamos?
+    - La Sucursal C es la que tiene un ingreso bruto mayor
+    - Las lineas que generan mas dinero en cada sucursal son: Hogar y estilo de vida en la Sucursal A, en sucursal a es Deporte y viaje y salud y belleza, en la sucursal c es bebidas y alimentos.
+    - Todas las Sucursales tienen una linea diferente como la que mas aporta al Ingreso Bruto
+    - La linea de electronicos es la que cuenta con los ingresos brutos mas equilibrados entre sucursales
+    """)
     plot_gross_income_by_branch_and_line(df_filt)
     st.markdown("---")
 
