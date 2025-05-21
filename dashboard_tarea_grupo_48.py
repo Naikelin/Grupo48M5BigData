@@ -338,9 +338,9 @@ with tabs[7]:
     
     #### ¿Qué observamos?
     - La Sucursal C es la que tiene un ingreso bruto mayor
-    - Las lineas que generan mas dinero en cada sucursal son: Hogar y estilo de vida en la Sucursal A, en sucursal a es Deporte y viaje y salud y belleza, en la sucursal c es bebidas y alimentos.
+    - Las lineas que generan más dinero en cada sucursal son: Hogar y estilo de vida en la Sucursal A, en sucursal B es Deporte y viaje y salud y belleza, en la sucursal C es bebidas y alimentos.
     - Todas las Sucursales tienen una linea diferente como la que mas aporta al Ingreso Bruto
-    - La linea de electronicos es la que cuenta con los ingresos brutos mas equilibrados entre sucursales
+    - La linea de electronicos es la que cuenta con los ingresos brutos más equilibrados entre sucursales
     """)
     plot_gross_income_by_branch_and_line(df_filt)
     st.markdown("---")
